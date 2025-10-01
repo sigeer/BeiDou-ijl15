@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -198,6 +198,8 @@
     <ClInclude Include="detver.h" />
     <ClInclude Include="dllmain.h" />
     <ClInclude Include="codecaves.h" />
+    <ClInclude Include="Net.h" />
+    <ClInclude Include="Packet.h" />
     <ClInclude Include="ReplacementFuncs.h" />
     <ClInclude Include="INIReader.h" />
     <ClInclude Include="Memory.h" />
@@ -212,6 +214,7 @@
     <ClCompile Include="BossHP.cpp" />
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="ijl15.cpp" />
+    <ClCompile Include="Net.cpp" />
     <ClCompile Include="ZAllocEx.cpp" />
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="Memory.cpp" />

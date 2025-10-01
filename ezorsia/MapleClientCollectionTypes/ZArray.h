@@ -296,42 +296,6 @@ public:
 		}
 	}
 
-private:
-	static void Construct(T* start, T* end)
-	{
-		for (T* i = start; i < end; i++)
-		{
-			i = T();
-		}
-	}
-
-	static void Destroy(T* start, T* end)
-	{
-		for (T* i = start; i < end; i++)
-		{
-			i->~T();
-		}
-	}
-
-	void Alloc(size_t uSize)
-	{
-		this->RemoveAll();
-
-		if (!uSize) return;
-
-		/* Allocate Desired Array Size + 4 bytes */
-		/* We casting to a dword so we can write and adjust the pointer easier */
-		DWORD* pAlloc = (DWORD*)ZAllocEx<ZAllocAnonSelector>::GetInstance()->Alloc(sizeof(T) * uSize + sizeof(PVOID));
-
-		/* Assign number of array items to array head */
-		*pAlloc = uSize;
-
-		/* Assign start of real allocated block to array pointer */
-		/* We take index 1 because index zero is the array item count */
-		pAlloc += 1;
-		this->a = reinterpret_cast<T*>(pAlloc);
-	}
-
 	void Realloc(size_t u, int nMode)
 	{
 		size_t uCurArraySize = this->GetCount();
@@ -386,6 +350,42 @@ private:
 			size_t* pCount = &reinterpret_cast<size_t*>(this->a)[-1];
 			*pCount = u;
 		}
+	}
+
+private:
+	static void Construct(T* start, T* end)
+	{
+		for (T* i = start; i < end; i++)
+		{
+			i = T();
+		}
+	}
+
+	static void Destroy(T* start, T* end)
+	{
+		for (T* i = start; i < end; i++)
+		{
+			i->~T();
+		}
+	}
+
+	void Alloc(size_t uSize)
+	{
+		this->RemoveAll();
+
+		if (!uSize) return;
+
+		/* Allocate Desired Array Size + 4 bytes */
+		/* We casting to a dword so we can write and adjust the pointer easier */
+		DWORD* pAlloc = (DWORD*)ZAllocEx<ZAllocAnonSelector>::GetInstance()->Alloc(sizeof(T) * uSize + sizeof(PVOID));
+
+		/* Assign number of array items to array head */
+		*pAlloc = uSize;
+
+		/* Assign start of real allocated block to array pointer */
+		/* We take index 1 because index zero is the array item count */
+		pAlloc += 1;
+		this->a = reinterpret_cast<T*>(pAlloc);
 	}
 
 	void Reserve(size_t uItems)

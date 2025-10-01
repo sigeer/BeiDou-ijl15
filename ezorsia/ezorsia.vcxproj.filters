@@ -147,6 +147,12 @@
     <ClInclude Include="FixBuddy.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Net.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Packet.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -171,6 +177,9 @@
       <Filter>Source Files\innerH</Filter>
     </ClCompile>
     <ClCompile Include="BossHP.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Net.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
