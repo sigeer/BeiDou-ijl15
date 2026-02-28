@@ -88,7 +88,8 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD  ul_reason_for_call, LPVOID lpReser
 		Client::MoreHook();
 		BossHP::Hook();
 		Client::WorldMap();
-		NetService::RecvHook();
+		Client::ConfigureHpMpAlert();
+		NetService::ConfigureRecvPacket();
 		std::cout << "GetModuleFileName hook created" << std::endl;
 		ijl15::CreateHook(); //NMCO::CreateHook();
 		std::cout << "NMCO hook initialized" << std::endl;

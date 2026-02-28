@@ -15,9 +15,13 @@ protected:
 
 public:
     short GetOpCode() {
-        short val = (m_aRecvBuff[m_uOffset] & 0xFF)
-            | ((m_aRecvBuff[m_uOffset + 1] & 0xFF << 8));
-        return val;
+        return static_cast<short>(
+            (m_aRecvBuff[4] & 0xFF) |
+            ((m_aRecvBuff[5] & 0xFF) << 8)
+            );
+    }
+    unsigned char GetCode(int offset) {
+        return m_aRecvBuff[offset + 6] & 0xFF;
     }
 };
 

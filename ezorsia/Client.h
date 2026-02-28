@@ -16,6 +16,8 @@ public:
 	static void NoPassword();
 	static void MoreHook();
 	static void WorldMap();
+    static void ConfigureHpMpAlert();
+	static void SetHpMpAlert(unsigned char hpAlert, unsigned char mpAlert);
 	static const int m_nIGCipherHash = 0XC65053F2;
 	static int m_nGameHeight;
 	static int m_nGameWidth;

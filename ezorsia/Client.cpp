@@ -3,6 +3,7 @@
 #include "codecaves.h"
 #include "FixIme.h"
 #include "FixBuddy.h"
+#include "Net.h"
 
 int Client::m_nGameHeight = 720; // 游戏窗口高度
 int Client::m_nGameWidth = 1280; // 游戏窗口宽度
@@ -957,3 +958,69 @@ void Client::WorldMap()
 	wordMapY = (m_nGameHeight - 524) / 2;
 	Memory::CodeCave(wordMapUIcc, 0x009EB594, 13);
 }
+
+// CWvsContext::OnEnterGame
+typedef void(__fastcall* OnEnterGame_Type)(void* pThis);
+static auto oOnEnterGame = reinterpret_cast<OnEnterGame_Type>(0x00A03935);
+
+OnEnterGame_Type OnEnterGame_Hook = [](void* pThis) -> void
+	{
+		oOnEnterGame(pThis);
+	};
+
+const ULONG UIStatusBarBase = 0xBEBF9C; // CUIStatusBar
+const ULONG OFS_HPAlert = 0x80;
+const ULONG OFS_MPAlert = OFS_HPAlert + 4;
+
+static bool TryGetHpMpAlert(DWORD& hpRatio, DWORD& mpRatio) {
+	__try {
+		DWORD configPtr = *reinterpret_cast<DWORD*>(UIStatusBarBase);
+		hpRatio = *reinterpret_cast<DWORD*>(configPtr + OFS_HPAlert);
+		mpRatio = *reinterpret_cast<DWORD*>(configPtr + OFS_MPAlert);
+		return true;
+	}
+	__except (EXCEPTION_EXECUTE_HANDLER) {
+		hpRatio = 0;
+		mpRatio = 0;
+		return false;
+	}
+}
+
+static void TryPostHpMpAlert()
+{
+	DWORD hpRatio = 0;
+	DWORD mpRatio = 0;
+	if (TryGetHpMpAlert(hpRatio, mpRatio))
+	{
+		NetService::PostHpMpAlert(hpRatio, mpRatio);
+	}
+}
+
+// CConfig::SaveGlobal
+typedef void(__fastcall* SaveGlobal_Type)(void* pthis);
+static auto oSaveGlobal = reinterpret_cast<SaveGlobal_Type>(0x0049C8E7);
+
+SaveGlobal_Type SaveGlobal_Hook = [](void* pThis)  -> void
+	{
+		oSaveGlobal(pThis);
+
+		TryPostHpMpAlert();
+	};
+
+
+
+void Client::ConfigureHpMpAlert() {
+	Memory::SetHook(true, reinterpret_cast<void**>(&oSaveGlobal), SaveGlobal_Hook);
+}
+
+
+void Client::SetHpMpAlert(unsigned char hpAlert, unsigned char mpAlert) {
+    __try {
+        DWORD configPtr = *reinterpret_cast<DWORD*>(UIStatusBarBase);
+		Memory::WriteInt(configPtr + OFS_HPAlert, hpAlert);
+		Memory::WriteInt(configPtr + OFS_MPAlert, mpAlert);
+    } __except (EXCEPTION_EXECUTE_HANDLER) {
+    }
+}
+
+
